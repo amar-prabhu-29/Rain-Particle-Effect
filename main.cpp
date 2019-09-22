@@ -1,11 +1,14 @@
+#include <iostream>
 #include <GL/glut.h>
 #include "Drop.h"
+#include "utilities.h"
 
 void displayHandler();
 void idleHandler();
 void initGL();
 
 const int dropCount = 700;
+int intersectedCount = 0;
 Drop drop[dropCount];
 
 int main(int argc, char *argv[]) {
@@ -31,10 +34,45 @@ void displayHandler() {
     glClear(GL_COLOR_BUFFER_BIT);
     glColor3ub(235, 244, 250);
     
+    //Raindrops
+    glPointSize(4);
     for(int i=0 ; i<dropCount ; i++) {
+        if(drop[i].isInsideTank()) {
+            intersectedCount++;
+            drop[i].resetDrop();
+            std::cout << intersectedCount << "\n";
+            continue;
+        }
+
         drop[i].show();
         drop[i].fall();
     }
+
+    drawLine(-25, -50, -25, -100);      //Left support
+    drawLine(25, -50, 25, -100);         //Right support
+
+    //Tank
+    glBegin(GL_LINE_STRIP);
+        glVertex2d(-40, 0);
+        glVertex2d(-40, -50);
+        glVertex2d(40, -50);
+        glVertex2d(40, 0);
+    glEnd();
+
+    //middle support
+    float Xmin = -25, Ymax = -50;
+    for(int i=0 ; i<3 ; i++) {
+
+        //left middle support        
+        drawRectangle(Xmin + 5, Ymax - 3 - (41/3.0), Xmin + 22.5, Ymax - 3);            
+        Xmin += 22.5;
+        
+        //right middle support
+        drawRectangle(Xmin + 5, Ymax - 3 - (41/3.0), Xmin + 22.5, Ymax - 3);            
+        Ymax = Ymax - 3 - (41/3.0);
+
+        Xmin = -25;
+    }    
     
     glFlush();
 }
