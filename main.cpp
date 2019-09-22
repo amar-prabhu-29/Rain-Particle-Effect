@@ -9,6 +9,7 @@ void initGL();
 
 const int dropCount = 700;
 int intersectedCount = 0;
+float scanline = -50;           //Initially, scanline is set to bottom of the tank.
 Drop drop[dropCount];
 
 int main(int argc, char *argv[]) {
@@ -72,7 +73,17 @@ void displayHandler() {
         Ymax = Ymax - 3 - (41/3.0);
 
         Xmin = -25;
-    }    
+    }
+
+    //Fill the tank 
+    int numLines = intersectedCount / 10;
+    for(int i=1 ; i<=numLines*100 ; i++) {
+        if(scanline+i/100.0 > 0) {
+            //0 is the Ymax of the tank. If current scanline (scanline+i) is greater than tank top, then stop the loop
+            break;
+        }
+        drawLine(-40, scanline + i/100.0, 40, scanline + i/100.0);
+    }
     
     glFlush();
 }

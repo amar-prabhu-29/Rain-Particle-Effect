@@ -30,7 +30,7 @@ void Drop::resetDrop() {
 
 bool Drop::isInsideTank() {
     // -40 and 40 are the left and right edges of the tank. -50 is bottom of the tank
-    if(x > -40 && x < 40 && y < -50) {
+    if(x > -40 && x < 40 && y <= -50) {
         return true;
     }
 
