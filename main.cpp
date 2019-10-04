@@ -1,15 +1,21 @@
 #include <iostream>
-#include <GL/glut.h>
+#include <GL/freeglut.h>
 #include "Drop.h"
 #include "utilities.h"
+#include "sunDisplay.h"
 
 void displayHandler();
 void idleHandler();
 void initGL();
+void sunDisplay();
+void processNormalKeys(unsigned char key, int x, int y);
 
 const int dropCount = 700;
 int intersectedCount = 0;
 float scanline = -50;           //Initially, scanline is set to bottom of the tank.
+int numLines;
+
+int checkTank = 0;
 Drop drop[dropCount];
 
 int main(int argc, char *argv[]) {
@@ -19,6 +25,7 @@ int main(int argc, char *argv[]) {
 
     glutDisplayFunc(displayHandler);
     glutIdleFunc(idleHandler);
+    glutKeyboardFunc(processNormalKeys);
 
     initGL();
     glutMainLoop();
@@ -41,7 +48,7 @@ void displayHandler() {
         if(drop[i].isInsideTank()) {
             intersectedCount++;
             drop[i].resetDrop();
-            std::cout << intersectedCount << "\n";
+            //std::cout << intersectedCount << "\n";
             continue;
         }
 
@@ -74,20 +81,46 @@ void displayHandler() {
 
         Xmin = -25;
     }
-
     //Fill the tank 
-    int numLines = intersectedCount / 10;
+    numLines = intersectedCount / 10;
     for(int i=1 ; i<=numLines*100 ; i++) {
         if(scanline+i/100.0 > 0) {
             //0 is the Ymax of the tank. If current scanline (scanline+i) is greater than tank top, then stop the loop
             break;
         }
+        //std::cout<<scanline;
         drawLine(-40, scanline + i/100.0, 40, scanline + i/100.0);
     }
+
     
     glFlush();
 }
 
 void idleHandler() {
     glutPostRedisplay();
+}
+
+void processNormalKeys(unsigned char key, int x, int y){
+    if(key == 's'){
+        setTankLevel(numLines);
+        glutDisplayFunc(sunDisplay);
+    }
+    if(key == 'r'){
+        intersectedCount = getTankLevel()*10;
+        glutDisplayFunc(displayHandler);
+    }
+}
+void sunDisplay(){
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    if(checkTank == 0){
+        checkTank = 1;
+        setTankLevel(numLines);
+    }
+    displayCelestialObject();
+    drawTank();
+    fillTank();
+    evaporate();
+    moveSun();
+
+    glFlush();
 }

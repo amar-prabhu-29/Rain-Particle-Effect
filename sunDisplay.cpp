@@ -1,0 +1,96 @@
+#include "sunDisplay.h"
+#include <GL/freeglut.h>
+#include "utilities.h"
+#include<iostream>
+#include<math.h>
+
+int tankLevel;
+int counter = 0;
+int tankFilled = 0;
+
+//Sun Coordinates
+int sunCounter = 0;
+float x=-101,y=60;
+bool dayCycle = true;
+float angleInit=0.0,angleFinal=360.0;
+
+void setTankLevel(int level){
+    tankLevel = level;
+}
+int getTankLevel(){
+    return tankLevel;
+}
+
+void moveSun(){
+    if(sunCounter % 100 == 0){
+        sunCounter = 0;
+        x=(x)*cos(-0.00523599)-(y+100)*sin(-0.00523599);
+        y=-100+(x)*sin(-0.00523599)+(y+100)*cos(-0.00523599);
+    }
+    sunCounter+=1;
+    if(dayCycle && x>100){
+        dayCycle = false;
+        x=-101;
+        angleInit = 90.0;
+        angleFinal = 270.0; 
+    }
+    if(!dayCycle && x>100){
+        dayCycle = true;
+        x=-101;
+        angleInit = 0.0;
+        angleFinal = 360.0;
+    }
+}
+
+void displayCelestialObject(){
+    float i = 0.0f;
+    glBegin(GL_TRIANGLE_FAN);
+        glVertex2f(x,y);
+        for(i = angleInit; i <= angleFinal; i++)
+            glVertex2f(10*cos(3.141592 * i / 180.0) + x, 10*sin(3.141592  * i / 180.0) + y);
+    glEnd();
+}
+
+void drawTank(){
+    drawLine(-25, -50, -25, -100);      //Left support
+    drawLine(25, -50, 25, -100);         //Right support
+
+    //Tank
+    glBegin(GL_LINE_STRIP);
+        glVertex2d(-40, 0);
+        glVertex2d(-40, -50);
+        glVertex2d(40, -50);
+        glVertex2d(40, 0);
+    glEnd();
+
+    //middle support
+    float Xmin = -25, Ymax = -50;
+    for(int i=0 ; i<3 ; i++) {
+
+        //left middle support        
+        drawRectangle(Xmin + 5, Ymax - 3 - (41/3.0), Xmin + 22.5, Ymax - 3);            
+        Xmin += 22.5;
+        
+        //right middle support
+        drawRectangle(Xmin + 5, Ymax - 3 - (41/3.0), Xmin + 22.5, Ymax - 3);            
+        Ymax = Ymax - 3 - (41/3.0);
+
+        Xmin = -25;
+}
+}
+
+void fillTank(){
+    int level = -50 + tankLevel;
+    for(int i=-50;i<=level;i++){
+        for(int j=1;j<=10;j++){
+            drawLine(-40,i+j/10.0,40,i+j/10.0);
+        }   
+    }
+}
+
+void evaporate(){
+    if(counter % 1000 == 0 && x>=-40 && x<=40 && dayCycle){
+        tankLevel-=1;
+    }
+    counter+=1;
+}
