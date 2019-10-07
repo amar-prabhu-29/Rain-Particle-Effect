@@ -5,3 +5,4 @@ void displayCelestialObject();
 void drawTank();
 void fillTank();
 void evaporate();
+void determineSky();

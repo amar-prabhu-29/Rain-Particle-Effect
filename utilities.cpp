@@ -2,7 +2,7 @@
 #include <iostream>
 
 void drawLine(float x1, float y1, float x2, float y2) {
-    glColor3f(1,1,1); 
+    glColor3f(0,0,0.54); 
     glBegin(GL_LINES);
         glVertex2d(x1, y1);
         glVertex2d(x2, y2);
@@ -10,21 +10,13 @@ void drawLine(float x1, float y1, float x2, float y2) {
 }
 
 void drawRectangle(float Xmin, float Ymin, float Xmax, float Ymax) {
-    glColor3f(1,1,1); 
-    glBegin(GL_LINE_LOOP);
+    glColor3ub(149, 148, 139);
+    glBegin(GL_POLYGON);
             glVertex2d(Xmin, Ymax);
             glVertex2d(Xmax, Ymax);
             glVertex2d(Xmax, Ymin);
             glVertex2d(Xmin, Ymin);  
     glEnd();
-}
-
-void drawBlackLine(float x1,float y1,float x2,float y2){
-    glBegin(GL_LINES);
-        glColor3d(0,0,0);  
-        glVertex2d(x1, y1);
-        glVertex2d(x2, y2);
-    glEnd(); 
 }
 
 int myRandom(int lower, int upper) {

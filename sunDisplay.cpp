@@ -3,6 +3,7 @@
 #include "utilities.h"
 #include<iostream>
 #include<math.h>
+#include "scenery.h"
 
 int tankLevel;
 int counter = 0;
@@ -31,8 +32,8 @@ void moveSun(){
     if(dayCycle && x>100){
         dayCycle = false;
         x=-101;
-        angleInit = 90.0;
-        angleFinal = 270.0; 
+        angleInit = 0.0;
+        angleFinal = 360.0; 
     }
     if(!dayCycle && x>100){
         dayCycle = true;
@@ -43,19 +44,39 @@ void moveSun(){
 }
 
 void displayCelestialObject(){
+    if(dayCycle){
+        glColor3ub(252, 212, 64);
+    }
+    else{
+        glColor3ub(255,255,255);
+    }
     float i = 0.0f;
     glBegin(GL_TRIANGLE_FAN);
         glVertex2f(x,y);
         for(i = angleInit; i <= angleFinal; i++)
             glVertex2f(10*cos(3.141592 * i / 180.0) + x, 10*sin(3.141592  * i / 180.0) + y);
     glEnd();
+    if(!dayCycle){
+        glColor3ub(57, 32, 51);
+        glBegin(GL_TRIANGLE_FAN);
+            glVertex2f(x+6,y);
+            for(i = angleInit; i <= angleFinal; i++)
+                glVertex2f(10*cos(3.141592 * i / 180.0) + x+10, 10*sin(3.141592  * i / 180.0) + y);
+        glEnd();
+    }
 }
 
 void drawTank(){
-    drawLine(-25, -50, -25, -100);      //Left support
-    drawLine(25, -50, 25, -100);         //Right support
-
+    glColor3ub(112,90,62);
+    glBegin(GL_POLYGON);
+        glVertex2f(-25,-50);
+        glVertex2f(-25,-100);
+        glVertex2f(25,-100);
+        glVertex2f(25,-50);
+    glEnd();
+    
     //Tank
+    glColor3f(0,0,0);
     glBegin(GL_LINE_STRIP);
         glVertex2d(-40, 0);
         glVertex2d(-40, -50);
@@ -67,7 +88,8 @@ void drawTank(){
     float Xmin = -25, Ymax = -50;
     for(int i=0 ; i<3 ; i++) {
 
-        //left middle support        
+        //left middle support   
+             
         drawRectangle(Xmin + 5, Ymax - 3 - (41/3.0), Xmin + 22.5, Ymax - 3);            
         Xmin += 22.5;
         
@@ -76,7 +98,7 @@ void drawTank(){
         Ymax = Ymax - 3 - (41/3.0);
 
         Xmin = -25;
-}
+    }
 }
 
 void fillTank(){
@@ -93,4 +115,22 @@ void evaporate(){
         tankLevel-=1;
     }
     counter+=1;
+}
+
+void determineSky(){
+    if(dayCycle){
+        if(x<=-40){
+            drawMorningSky();
+        }
+        else if(x>=-40 && x<=40){
+            drawAfternoonSky();
+        }
+        else{
+            drawEveningSky();
+        }
+    }
+    else{
+        drawNightSky();
+    }
+
 }
