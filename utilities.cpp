@@ -10,7 +10,7 @@ void drawLine(float x1, float y1, float x2, float y2) {
 }
 
 void drawRectangle(float Xmin, float Ymin, float Xmax, float Ymax) {
-    glColor3ub(149, 148, 139);
+    glColor3ub(155,118,83);
     glBegin(GL_POLYGON);
             glVertex2d(Xmin, Ymax);
             glVertex2d(Xmax, Ymax);
