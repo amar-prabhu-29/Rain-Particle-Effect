@@ -17,6 +17,9 @@ float angleInit=0.0,angleFinal=360.0;
 
 void setTankLevel(int level){
     tankLevel = level;
+    if(tankLevel > 50){
+        tankLevel = 50;
+    }
 }
 int getTankLevel(){
     return tankLevel;
@@ -63,6 +66,7 @@ void displayCelestialObject(){
             for(i = angleInit; i <= angleFinal; i++)
                 glVertex2f(10*cos(3.141592 * i / 180.0) + x+10, 10*sin(3.141592  * i / 180.0) + y);
         glEnd();
+        drawStars();
     }
 }
 
@@ -103,7 +107,7 @@ void drawTank(){
 
 void fillTank(){
     int level = -50 + tankLevel;
-    for(int i=-50;i<=level;i++){
+    for(int i=-50;i<=level-1;i++){
         for(int j=1;j<=10;j++){
             drawLine(-40,i+j/10.0,40,i+j/10.0);
         }   
@@ -111,7 +115,7 @@ void fillTank(){
 }
 
 void evaporate(){
-    if(counter % 1000 == 0 && x>=-40 && x<=40 && dayCycle){
+    if(counter % 1000 == 0 && x>=-40 && x<=40 && dayCycle && tankLevel>=0){
         tankLevel-=1;
     }
     counter+=1;

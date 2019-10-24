@@ -6,3 +6,4 @@ void drawEveningSky();
 void drawRainySky();
 void drawTankBackground();
 void drawTankForeground();
+void drawStars();
